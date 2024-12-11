@@ -27,6 +27,8 @@ import Foundation
 // 음수: Bellman-Ford 활용해야 함
 
 
+// 인접 리스트 활용해서 구하기
+
 
 // 우선순위 큐를 위한 Heap 구조체
 struct Heap<T> {
@@ -44,6 +46,9 @@ struct Heap<T> {
         // 내림차순 정렬
         while index > 0, !comparer(nodes[(index - 1) / 2], nodes[index]) {
             nodes.swapAt((index - 1) / 2, index)
+            
+            // 부모 Nodedml index 구하기 (완전 이진 트리 속성)
+            // while 활용: 계속해서 위로 이동
             index = (index - 1) / 2
         }
     }
@@ -51,13 +56,18 @@ struct Heap<T> {
     mutating func dequeue() -> T? {
         guard !nodes.isEmpty else { return nil }
         if nodes.count == 1 { return nodes.removeFirst() }
+        
         let result = nodes[0]
         nodes[0] = nodes.removeLast()
+        
+        // root에서 시작
         var index = 0
-        
-        
+    
         while index * 2 + 1 < nodes.count {
             var smallerChildIndex = index * 2 + 1
+            
+            // index * 2 + 1: 왼쪽 자식 노드
+            // index * 2 + 2: 오른쪽 자식 노드
             if index * 2 + 2 < nodes.count && comparer(nodes[index * 2 + 2], nodes[index * 2 + 1]) {
                 smallerChildIndex = index * 2 + 2
             }

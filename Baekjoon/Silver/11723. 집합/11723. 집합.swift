@@ -50,6 +50,17 @@ for _ in 0..<count {
 
 // 비트 연산: & (AND), | (OR), ^ (XOR), ~ (NOT), >>/<< (SHIFT)
 
+// 필요한 경우
+// 1. 방대한 데이터 양
+
+// 2. 통신 시 페이로드 절약
+// e.g.) mon: 0b000000001, tue: 0b00000010, ...
+// { holiday: [wed, fri, sat, sun]] } --> { holiday: 116 }
+
+// 3. 테이블 설계 제1정규형 위반하지 않기
+// 테이블 셀에 여러 개의 데이터 갖지 않기 (따로 테이블 생성 시, join으로 쿼리 성능 문제)
+// bit값 그대로 전달: 하나의 값만 가짐
+
 import Foundation
 
 final class FileIO {
@@ -196,21 +207,30 @@ var result = ""
 
 while m != 0 {
     switch file.readStirngSum() {
-        case 297:       // add: 입력받은 숫자에 해당하는 비트를 1로 설정
+        case 297:
+            // add: 입력받은 숫자에 해당하는 비트를 1로 설정
+            // 1 << file.readInt() : 1bit를 file.readInt()값 만큼 이동
+            // e.g.) bit: 0000, file.readInt(): 3 --> bit: 01000
             bit |= (1 << file.readInt())
-        case 654:       // remove: 입력받은 숫자에 해당하는 비트를 0으로 설정
+        case 654:
+            // remove: 입력받은 숫자에 해당하는 비트를 0으로 설정
+            // e.g.) bit: 01100, file.readInt(): 3 --> bit: 00100 
             bit &= ~(1 << file.readInt())
-        case 510:       // check: 입력받은 숫자에 해당하는 비트가 1인지 여부에 따라 결정
-            if (bit & (1 << file.readInt()) != 0){
+        case 510:
+            // check: 입력받은 숫자에 해당하는 비트가 1인지 여부에 따라 결정
+            if (bit & (1 << file.readInt()) != 0) {
                 result.append("1\n")
             } else {
                 result.append("0\n")
         }
-        case 642:       // toggle: 입력받은 숫자에 해당하는 비트를 반전
+        case 642:
+            // toggle: 입력받은 숫자에 해당하는 비트를 반전
             bit ^= (1 << file.readInt())
-        case 313:       // all: 모든 비트 1로 설정
+        case 313:  
+            // all: 모든 비트 1로 설정
             bit |= (~0)
-        case 559:       // empty: 모든 비트 0으로 설정
+        case 559:
+            // empty: 모든 비트 0으로 설정
             bit &= 0
         default:
             break
